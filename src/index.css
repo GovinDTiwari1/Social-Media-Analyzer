@@ -15,9 +15,6 @@ body {
   min-height: 100vh;
 }
 
-/* =========================
-   MAIN APP
-========================= */
 
 .app {
   max-width: 900px;
@@ -25,9 +22,6 @@ body {
   padding: 55px 20px;
 }
 
-/* =========================
-   HEADINGS
-========================= */
 
 h1 {
   font-size: 36px;
@@ -54,9 +48,6 @@ h1 {
   font-size: 15px;
 }
 
-/* =========================
-   DROPZONE
-========================= */
 
 .dropzone {
   border: 1.5px dashed #087fc4;
@@ -126,9 +117,6 @@ h1 {
   color: #eaf8ff;
 }
 
-/* =========================
-   FILENAME
-========================= */
 
 .filename {
   text-align: center;
@@ -139,10 +127,6 @@ h1 {
 
   color: #6fa5c4;
 }
-
-/* =========================
-   LOADING
-========================= */
 
 .loading {
   margin-top: 24px;
@@ -164,9 +148,6 @@ h1 {
   font-size: 14px;
 }
 
-/* =========================
-   PROGRESS BAR
-========================= */
 
 .progress-bar {
   width: 100%;
@@ -203,9 +184,6 @@ h1 {
   transition: width 0.2s ease;
 }
 
-/* =========================
-   ERROR
-========================= */
 
 .error {
   margin-top: 20px;
@@ -225,9 +203,6 @@ h1 {
   text-align: center;
 }
 
-/* =========================
-   RESULTS
-========================= */
 
 .results {
   margin-top: 36px;
@@ -260,9 +235,6 @@ h1 {
   letter-spacing: -0.2px;
 }
 
-/* =========================
-   EXTRACTED TEXT
-========================= */
 
 .extracted-text {
   white-space: pre-wrap;
@@ -296,7 +268,6 @@ h1 {
     inset 0 0 20px rgba(0, 120, 200, 0.025);
 }
 
-/* Scrollbar */
 
 .extracted-text::-webkit-scrollbar {
   width: 7px;
@@ -315,10 +286,6 @@ h1 {
 .extracted-text::-webkit-scrollbar-thumb:hover {
   background: #008dcc;
 }
-
-/* =========================
-   ANALYSIS
-========================= */
 
 .analysis {
   margin-top: 26px;
@@ -360,10 +327,6 @@ h1 {
   color: #00bfff;
 }
 
-/* =========================
-   OPTIONAL BUTTON STYLE
-========================= */
-
 button {
   border: none;
 
@@ -398,10 +361,6 @@ button:hover {
   box-shadow:
     0 0 25px rgba(0, 190, 255, 0.35);
 }
-
-/* =========================
-   SELECTION
-========================= */
 
 ::selection {
   background: rgba(0, 180, 255, 0.3);
