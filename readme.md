@@ -58,4 +58,4 @@ A key trade-off was choosing client-side processing instead of a backend service
 
 ## Live Demo
 
-👉 https://social-media-analyzer-cgcx.vercel.app/
+👉 https://social-media-analyzer-sage.vercel.app/
