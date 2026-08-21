@@ -4,139 +4,407 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: #f5f6fa;
-  color: #1a1a2e;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+
+  background:
+    radial-gradient(circle at 50% 15%, rgba(0, 140, 220, 0.12), transparent 35%),
+    linear-gradient(180deg, #020817 0%, #031326 50%, #020a16 100%);
+
+  color: #eaf7ff;
+  min-height: 100vh;
 }
+
+/* =========================
+   MAIN APP
+========================= */
 
 .app {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 55px 20px;
 }
 
+/* =========================
+   HEADINGS
+========================= */
+
 h1 {
-  font-size: 28px;
-  margin-bottom: 6px;
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 8px;
+
   text-align: center;
+
+  color: #f2fbff;
+
+  letter-spacing: -0.8px;
+
+  text-shadow:
+    0 0 15px rgba(0, 174, 255, 0.25);
 }
 
 .subtitle {
   text-align: center;
-  color: #666;
-  margin-bottom: 32px;
+
+  color: #7198b5;
+
+  margin-bottom: 35px;
+
   font-size: 15px;
 }
 
-/* Dropzone */
+/* =========================
+   DROPZONE
+========================= */
+
 .dropzone {
-  border: 2px dashed #b0b3c6;
-  border-radius: 12px;
-  padding: 48px 20px;
+  border: 1.5px dashed #087fc4;
+
+  border-radius: 18px;
+
+  padding: 55px 20px;
+
   text-align: center;
+
   cursor: pointer;
-  background-color: #fff;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(5, 34, 61, 0.85),
+      rgba(3, 20, 38, 0.9)
+    );
+
+  box-shadow:
+    inset 0 0 30px rgba(0, 140, 255, 0.04),
+    0 10px 35px rgba(0, 0, 0, 0.35);
+
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
 }
 
 .dropzone:hover {
-  border-color: #6c63ff;
+  border-color: #00aaff;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(5, 43, 73, 0.95),
+      rgba(3, 25, 45, 0.95)
+    );
+
+  box-shadow:
+    0 0 25px rgba(0, 170, 255, 0.12),
+    inset 0 0 25px rgba(0, 170, 255, 0.04);
+
+  transform: translateY(-2px);
 }
 
 .dropzone.active {
-  border-color: #6c63ff;
-  background-color: #f0efff;
+  border-color: #00c8ff;
+
+  background:
+    rgba(0, 150, 255, 0.08);
+
+  box-shadow:
+    0 0 30px rgba(0, 200, 255, 0.2);
 }
 
 .dropzone p {
   margin: 0;
-  color: #555;
+
+  color: #b7d3e5;
+
   font-size: 15px;
 }
 
-.filename {
-  text-align: center;
-  margin-top: 12px;
-  font-size: 14px;
-  color: #444;
+.dropzone p::first-line {
+  color: #eaf8ff;
 }
 
-/* Loading */
+/* =========================
+   FILENAME
+========================= */
+
+.filename {
+  text-align: center;
+
+  margin-top: 12px;
+
+  font-size: 14px;
+
+  color: #6fa5c4;
+}
+
+/* =========================
+   LOADING
+========================= */
+
 .loading {
   margin-top: 24px;
+
   text-align: center;
+
+  background: rgba(3, 23, 42, 0.65);
+
+  border: 1px solid #0b3554;
+
+  border-radius: 14px;
+
+  padding: 18px;
 }
+
+.loading p {
+  color: #b9d9ed;
+
+  font-size: 14px;
+}
+
+/* =========================
+   PROGRESS BAR
+========================= */
 
 .progress-bar {
   width: 100%;
+
   height: 8px;
-  background-color: #e0e0e0;
-  border-radius: 4px;
+
+  background-color: #061523;
+
+  border: 1px solid #0d3049;
+
+  border-radius: 10px;
+
   overflow: hidden;
-  margin-top: 8px;
+
+  margin-top: 10px;
 }
 
 .progress-fill {
   height: 100%;
-  background-color: #6c63ff;
+
+  background:
+    linear-gradient(
+      90deg,
+      #008cff,
+      #00c6ff,
+      #26e0ff
+    );
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 0 12px rgba(0, 190, 255, 0.55);
+
   transition: width 0.2s ease;
 }
 
-/* Error */
+/* =========================
+   ERROR
+========================= */
+
 .error {
   margin-top: 20px;
-  padding: 12px 16px;
-  background-color: #ffe5e5;
-  color: #c0392b;
-  border-radius: 8px;
+
+  padding: 13px 16px;
+
+  background-color: rgba(255, 65, 80, 0.08);
+
+  border: 1px solid rgba(255, 65, 80, 0.3);
+
+  color: #ff8c98;
+
+  border-radius: 10px;
+
   font-size: 14px;
+
   text-align: center;
 }
 
-/* Results */
+/* =========================
+   RESULTS
+========================= */
+
 .results {
   margin-top: 36px;
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(5, 30, 52, 0.92),
+      rgba(2, 18, 34, 0.95)
+    );
+
+  border: 1px solid #103a5b;
+
+  border-radius: 18px;
+
+  padding: 26px;
+
+  box-shadow:
+    0 15px 45px rgba(0, 0, 0, 0.45),
+    inset 0 0 25px rgba(0, 130, 220, 0.025);
 }
 
 .results h2 {
-  font-size: 18px;
+  font-size: 19px;
+
   margin-bottom: 12px;
+
+  color: #edfaff;
+
+  letter-spacing: -0.2px;
 }
+
+/* =========================
+   EXTRACTED TEXT
+========================= */
 
 .extracted-text {
   white-space: pre-wrap;
+
   word-wrap: break-word;
-  background-color: #f9f9fb;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 16px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #03101e,
+      #020b15
+    );
+
+  border: 1px solid #0d3049;
+
+  border-radius: 12px;
+
+  padding: 17px;
+
   max-height: 300px;
+
   overflow-y: auto;
+
   font-size: 14px;
-  line-height: 1.5;
+
+  line-height: 1.6;
+
+  color: #a9c8db;
+
+  box-shadow:
+    inset 0 0 20px rgba(0, 120, 200, 0.025);
 }
 
+/* Scrollbar */
+
+.extracted-text::-webkit-scrollbar {
+  width: 7px;
+}
+
+.extracted-text::-webkit-scrollbar-track {
+  background: #020b15;
+}
+
+.extracted-text::-webkit-scrollbar-thumb {
+  background: #0b547d;
+
+  border-radius: 10px;
+}
+
+.extracted-text::-webkit-scrollbar-thumb:hover {
+  background: #008dcc;
+}
+
+/* =========================
+   ANALYSIS
+========================= */
+
 .analysis {
-  margin-top: 24px;
+  margin-top: 26px;
+}
+
+.analysis h2,
+.analysis h3 {
+  color: #edfaff;
 }
 
 .analysis h3 {
   font-size: 16px;
+
   margin-top: 20px;
+
   margin-bottom: 8px;
+
+  color: #27c9ff;
+
+  text-shadow:
+    0 0 10px rgba(0, 190, 255, 0.15);
 }
 
 .analysis ul {
   padding-left: 20px;
+
   margin: 0;
 }
 
 .analysis li {
-  margin-bottom: 6px;
+  margin-bottom: 7px;
+
   font-size: 14px;
-  color: #333;
+
+  color: #a9c8db;
+}
+
+.analysis li::marker {
+  color: #00bfff;
+}
+
+/* =========================
+   OPTIONAL BUTTON STYLE
+========================= */
+
+button {
+  border: none;
+
+  border-radius: 9px;
+
+  padding: 11px 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #008cff,
+      #00bfff
+    );
+
+  color: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 15px rgba(0, 174, 255, 0.18);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 0 25px rgba(0, 190, 255, 0.35);
+}
+
+/* =========================
+   SELECTION
+========================= */
+
+::selection {
+  background: rgba(0, 180, 255, 0.3);
+
+  color: white;
 }
