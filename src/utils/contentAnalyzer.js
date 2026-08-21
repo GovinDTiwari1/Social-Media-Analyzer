@@ -1,9 +1,3 @@
-// Removes lines that are likely OCR noise (garbled text from photos/backgrounds)
-// rather than real caption content. Keeps lines that look like genuine words,
-// or that contain hashtags/mentions (which we always want to keep).
-//
-// STRICTER VERSION: tighter thresholds than the original — catches more noise,
-// but has a slightly higher chance of dropping a genuinely short real line too.
 function cleanOcrNoise(text) {
   const lines = text.split('\n')
 
@@ -39,13 +33,11 @@ function cleanOcrNoise(text) {
     if (avgWordLength < 3) return false
 
     // New: reject lines with unusually high punctuation/symbol density
-    // (garbled OCR often produces stray symbols like ~, |, *, etc.)
     const symbolCount = (trimmed.match(/[^a-zA-Z0-9\s.,!?'’"-]/g) || []).length
     const symbolRatio = symbolCount / trimmed.length
     if (symbolRatio > 0.15) return false
 
     // New: reject lines with too many single-letter "words"
-    // (classic sign of garbled text broken into fragments)
     const singleLetterWords = words.filter((w) => w.length === 1).length
     if (singleLetterWords / words.length > 0.3) return false
 

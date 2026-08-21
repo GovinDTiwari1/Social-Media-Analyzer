@@ -1,8 +1,5 @@
 import Tesseract from 'tesseract.js'
 
-// Preprocess the image before OCR: upscale, grayscale, and boost contrast.
-// This significantly improves accuracy on screenshots with photos/backgrounds
-// behind the text (like Instagram/social media posts).
 function preprocessImage(file) {
   return new Promise((resolve, reject) => {
     const img = new Image()

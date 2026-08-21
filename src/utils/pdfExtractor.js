@@ -1,6 +1,5 @@
 import * as pdfjsLib from 'pdfjs-dist'
 
-// Point pdf.js to its worker (served from node_modules via Vite)
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
   import.meta.url
