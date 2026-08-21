@@ -1,157 +1,83 @@
-import { useState, useCallback } from 'react'
-<UploadBox onFileAccepted={handleFile} fileName={fileName} loading={loading} />
-import * as pdfjsLib from 'pdfjs-dist'
-import Tesseract from 'tesseract.js'
-import './index.css'
-import AnalysisResult from './components/AnalysisResult'
+import { useState } from 'react'
 import UploadBox from './components/UploadBox'
-import ExtractedText from './components/ExtractedText'
 import LoadingSpinner from './components/LoadingSpinner'
+import ExtractedText from './components/ExtractedText'
+import AnalysisResult from './components/AnalysisResult'
+import { extractPdfText } from './utils/pdfExtractor'
+import { extractImageText } from './utils/ocrExtractor'
 import { analyzeContent } from './utils/contentAnalyzer'
-
-// Point pdf.js to its worker (served from node_modules via Vite)
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url
-).toString()
+import './index.css'
 
 function App() {
-    const [extractedText, setExtractedText] = useState('')
-    const [analysis, setAnalysis] = useState(null)
-    const [loading, setLoading] = useState(false)
-    const [progress, setProgress] = useState(0)
-    const [error, setError] = useState('')
-    const [fileName, setFileName] = useState('')
+  const [extractedText, setExtractedText] = useState('')
+  const [analysis, setAnalysis] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [error, setError] = useState('')
+  const [fileName, setFileName] = useState('')
 
-    const extractPdfText = async (file) => {
-        const arrayBuffer = await file.arrayBuffer()
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
-        let fullText = ''
+  const handleFile = async (file) => {
+    setError('')
+    setExtractedText('')
+    setAnalysis(null)
+    setProgress(0)
+    setFileName(file.name)
 
-        for (let i = 1; i <= pdf.numPages; i++) {
-            const page = await pdf.getPage(i)
-            const content = await page.getTextContent()
-            const pageText = content.items.map((item) => item.str).join(' ')
-            fullText += pageText + '\n\n'
-            setProgress(Math.round((i / pdf.numPages) * 100))
-        }
-        return fullText.trim()
+    if (!file) return
+
+    const isPdf = file.type === 'application/pdf'
+    const isImage = file.type.startsWith('image/')
+
+    if (!isPdf && !isImage) {
+      setError('Unsupported file type. Please upload a PDF or an image (PNG/JPG).')
+      return
     }
 
-    const extractImageText = async (file) => {
-        const result = await Tesseract.recognize(file, 'eng', {
-            logger: (m) => {
-                if (m.status === 'recognizing text') {
-                    setProgress(Math.round(m.progress * 100))
-                }
-            },
-        })
-        return result.data.text.trim()
+    setLoading(true)
+    try {
+      const text = isPdf
+        ? await extractPdfText(file, setProgress)
+        : await extractImageText(file, setProgress)
+
+      if (!text) {
+        setError('No text could be extracted from this file.')
+        setLoading(false)
+        return
+      }
+
+      setExtractedText(text)
+      setAnalysis(analyzeContent(text))
+    } catch (err) {
+      console.error(err)
+      setError('Something went wrong while processing the file. Please try again.')
+    } finally {
+      setLoading(false)
+      setProgress(0)
     }
+  }
 
-    const analyzeContent = (text) => {
-        const words = text.trim().split(/\s+/).filter(Boolean)
-        const hashtags = text.match(/#\w+/g) || []
-        const mentions = text.match(/@\w+/g) || []
-        const charCount = text.length
-        const readingTimeSec = Math.ceil(words.length / 3.3) // ~200 wpm
+  return (
+    <div className="app">
+      <h1>Social Media Content Analyzer</h1>
+      <p className="subtitle">
+        Upload a PDF or scanned image to extract text and get engagement suggestions.
+      </p>
 
-        const suggestions = []
-        if (hashtags.length === 0) suggestions.push('Add a few relevant hashtags to improve discoverability.')
-        if (hashtags.length > 10) suggestions.push('Too many hashtags can look spammy — try trimming to 5–10.')
-        if (words.length > 60) suggestions.push('Post is fairly long — consider shortening for higher engagement.')
-        if (words.length < 5) suggestions.push('Post seems very short — consider adding more context.')
-        if (mentions.length === 0) suggestions.push('Tagging relevant accounts can help increase reach.')
-        if (suggestions.length === 0) suggestions.push('Looks good! Your post is well balanced.')
+      <UploadBox onFileAccepted={handleFile} fileName={fileName} loading={loading} />
 
-        return {
-            wordCount: words.length,
-            charCount,
-            hashtagCount: hashtags.length,
-            mentionCount: mentions.length,
-            readingTimeSec,
-            suggestions,
-        }
-    }
+      {loading && <LoadingSpinner progress={progress} />}
 
-    const handleFile = async (file) => {
-        setError('')
-        setExtractedText('')
-        setAnalysis(null)
-        setProgress(0)
-        setFileName(file.name)
+      {error && <p className="error">{error}</p>}
 
-        if (!file) return
+      <ExtractedText text={extractedText} />
 
-        const isPdf = file.type === 'application/pdf'
-        const isImage = file.type.startsWith('image/')
-
-        if (!isPdf && !isImage) {
-            setError('Unsupported file type. Please upload a PDF or an image (PNG/JPG).')
-            return
-        }
-
-        setLoading(true)
-        try {
-            const text = isPdf ? await extractPdfText(file) : await extractImageText(file)
-
-            if (!text) {
-                setError('No text could be extracted from this file.')
-                setLoading(false)
-                return
-            }
-
-            setExtractedText(text)
-            setAnalysis(analyzeContent(text))
-        } catch (err) {
-            console.error(err)
-            setError('Something went wrong while processing the file. Please try again.')
-        } finally {
-            setLoading(false)
-            setProgress(0)
-        }
-    }
-
-    const onDrop = useCallback((acceptedFiles) => {
-        if (acceptedFiles.length > 0) handleFile(acceptedFiles[0])
-    }, [])
-
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop,
-        multiple: false,
-        accept: {
-            'application/pdf': ['.pdf'],
-            'image/png': ['.png'],
-            'image/jpeg': ['.jpg', '.jpeg'],
-        },
-    })
-
-    return (
-        <div className="app">
-            <h1>Social Media Content Analyzer</h1>
-            <p className="subtitle">Upload a PDF or scanned image to extract text and get engagement suggestions.</p>
-
-            <div {...getRootProps()} className={`dropzone ${isDragActive ? 'active' : ''}`}>
-                <input {...getInputProps()} />
-                {isDragActive ? (
-                    <p>Drop the file here...</p>
-                ) : (
-                    <p>Drag & drop a PDF or image here, or click to select a file</p>
-                )}
-            </div>
-
-            {fileName && !loading && <p className="filename">Selected: {fileName}</p>}
-
-            {loading && <LoadingSpinner progress={progress} />}
-
-            {error && <p className="error">{error}</p>}
-
-            <ExtractedText text={extractedText} />
-            <div className="results">
-                <AnalysisResult analysis={analysis} />
-            </div>
+      {analysis && (
+        <div className="results">
+          <AnalysisResult analysis={analysis} />
         </div>
-    )
+      )}
+    </div>
+  )
 }
 
 export default App
