@@ -22,13 +22,13 @@ then analyzes the content to suggest engagement improvements for social media po
 ## Getting Started
 
 ### Prerequisites
-- Node.js (v18 or higher recommended)
+- Node.js
 - npm
 
 ### Installation
 
 ```bash
-git clone https://github.com/<your-username>/social-media-analyzer.git
+git clone https://github.com/GovindTiwari1/Social-Media-Analyzer.git
 cd social-media-analyzer
 npm install
 ```
@@ -39,7 +39,7 @@ npm install
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`
+The app will be available at `http://127.0.0.1:5173/`
 
 ### Build for Production
 
