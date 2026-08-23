@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 
-function UploadBox({ onFileAccepted, fileName, loading }) {
+function UploadBox({ onFileAccepted, fileName }) {
   const onDrop = useCallback(
     (acceptedFiles) => {
       if (acceptedFiles.length > 0) onFileAccepted(acceptedFiles[0])
@@ -30,7 +30,7 @@ function UploadBox({ onFileAccepted, fileName, loading }) {
         )}
       </div>
 
-      {fileName && !loading && <p className="filename">Selected: {fileName}</p>}
+      {fileName && <p className="filename">Selected: {fileName}</p>}
     </>
   )
 }

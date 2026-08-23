@@ -1,28 +1,32 @@
 import { useState } from 'react'
-import UploadBox from './components/UploadBox'
-import LoadingSpinner from './components/LoadingSpinner'
-import ExtractedText from './components/ExtractedText'
-import AnalysisResult from './components/AnalysisResult'
+import UploadPage from './components/UploadPage'
+import AnalysisPage from './components/AnalysisPage'
 import { extractPdfText } from './utils/pdfExtractor'
 import { extractImageText } from './utils/ocrExtractor'
 import { analyzeContent } from './utils/contentAnalyzer'
 import './index.css'
 
 function App() {
+  const [view, setView] = useState('upload') // 'upload' | 'analysis'
+  const [file, setFile] = useState(null)
+  const [fileName, setFileName] = useState('')
+  const [platform, setPlatform] = useState('general')
+
   const [extractedText, setExtractedText] = useState('')
   const [analysis, setAnalysis] = useState(null)
   const [loading, setLoading] = useState(false)
   const [progress, setProgress] = useState(0)
   const [error, setError] = useState('')
-  const [fileName, setFileName] = useState('')
 
-  const handleFile = async (file) => {
+  const handleFileSelected = (selectedFile) => {
     setError('')
     setExtractedText('')
     setAnalysis(null)
-    setProgress(0)
-    setFileName(file.name)
+    setFile(selectedFile)
+    setFileName(selectedFile.name)
+  }
 
+  const handleAnalyze = async () => {
     if (!file) return
 
     const isPdf = file.type === 'application/pdf'
@@ -33,7 +37,10 @@ function App() {
       return
     }
 
+    setError('')
     setLoading(true)
+    setProgress(0)
+
     try {
       const text = isPdf
         ? await extractPdfText(file, setProgress)
@@ -45,8 +52,10 @@ function App() {
         return
       }
 
+      const result = analyzeContent(text, platform)
       setExtractedText(text)
-      setAnalysis(analyzeContent(text))
+      setAnalysis(result)
+      setView('analysis')
     } catch (err) {
       console.error(err)
       setError('Something went wrong while processing the file. Please try again.')
@@ -56,25 +65,36 @@ function App() {
     }
   }
 
+  const handleBack = () => {
+    setView('upload')
+    setFile(null)
+    setFileName('')
+    setExtractedText('')
+    setAnalysis(null)
+    setError('')
+  }
+
   return (
     <div className="app">
-      <h1>Social Media Content Analyzer</h1>
-      <p className="subtitle">
-        Upload a PDF or scanned image to extract text and get engagement suggestions.
-      </p>
-
-      <UploadBox onFileAccepted={handleFile} fileName={fileName} loading={loading} />
-
-      {loading && <LoadingSpinner progress={progress} />}
-
-      {error && <p className="error">{error}</p>}
-
-      <ExtractedText text={extractedText} />
-
-      {analysis && (
-        <div className="results">
-          <AnalysisResult analysis={analysis} />
-        </div>
+      {view === 'upload' ? (
+        <UploadPage
+          file={file}
+          fileName={fileName}
+          platform={platform}
+          onPlatformChange={setPlatform}
+          onFileSelected={handleFileSelected}
+          onAnalyze={handleAnalyze}
+          loading={loading}
+          progress={progress}
+          error={error}
+        />
+      ) : (
+        <AnalysisPage
+          analysis={analysis}
+          extractedText={extractedText}
+          fileName={fileName}
+          onBack={handleBack}
+        />
       )}
     </div>
   )
