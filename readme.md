@@ -4,19 +4,26 @@ A web application that extracts text from uploaded PDFs and scanned images (via 
 then analyzes the content to suggest engagement improvements for social media posts.
 
 ## Features
+- 📄 Upload PDFs or scanned images via drag-and-drop or file picker
+- 👁️ Live file preview before analysis (embedded PDF viewer / image preview)
+- 🔍 PDF text extraction with structure preserved across pages
+- 🖼️ In-browser OCR for images, with preprocessing (upscale, grayscale, contrast, sharpening) for better accuracy on low-contrast or blurry uploads
+- 🧹 OCR noise filtering so word counts reflect the real caption, not misread artifacts
+- 🎯 Platform-aware suggestions for Twitter/X, Instagram, LinkedIn, or General
+- 📊 Word/character count, hashtags, mentions, reading time, and readability score
+- 🟢 Tone checks for ALL CAPS overuse, exclamation spam, and call-to-action presence
+- 🏆 Overall 0–100 engagement score with a color-coded gauge
+- ✨ Hashtags and mentions highlighted inline in the extracted text
+- 📋 Copy extracted text or download it as .txt
+- 🧭 Two-page flow: upload/preview, then an analysis dashboard
+- ⏳ Loading states and error handling throughout
 
-- 📄 Upload PDF files or scanned images (drag-and-drop or file picker)
-- 🔍 Extract text from PDFs while preserving structure
-- 🖼️ OCR-based text extraction from images
-- 📊 Basic content analysis (word count, hashtags, mentions, readability)
-- 💡 Simple engagement improvement suggestions
-- ⏳ Loading states and error handling for a smooth user experience
 
 ## Tech Stack
 
 - **Frontend:** React (Vite)
 - **PDF Parsing:** pdf.js
-- **OCR:** Tesseract.js
+- **OCR:** Tesseract.js, with custom canvas-based image preprocessing
 - **Upload UI:** react-dropzone
 
 ## Getting Started
@@ -48,13 +55,11 @@ npm run build
 ```
 
 ## Approach
-The Social Media Content Analyzer is built using React with Vite to provide a fast, responsive, and component-based frontend. Vite was chosen for its lightweight setup and fast development experience. react-dropzone is used to provide an intuitive drag-and-drop and file-picker interface for uploading PDF and image files.
+The app is built with React and runs entirely client-side with no backend, keeping uploaded content private to the user's browser. PDFs are parsed directly in the browser, extracting embedded text across all pages while preserving line structure. Images go through an in-browser OCR engine, but first pass through a canvas-based preprocessing step — upscaling, grayscale conversion, contrast boosting, and sharpening — since testing on real social media screenshots showed raw OCR struggled with captions overlaid on busy photo backgrounds. A noise filter then removes garbled OCR fragments (short, symbol-heavy, or low letter-ratio lines) before analysis, so word counts reflect real caption content rather than misread artifacts.
 
-For PDF files, pdf.js extracts text directly from the document while preserving the available text structure as much as possible. For image files such as screenshots or scanned social media posts, Tesseract.js performs OCR directly in the browser to recognize and extract the text.
+Extracted text is analyzed for word/character count, hashtags, mentions, reading time, and a Flesch Reading Ease readability score, plus tone checks for ALL CAPS overuse, exclamation-mark spam, and call-to-action presence. These combine into a single 0–100 engagement score, and analysis is platform-aware — Twitter/X, Instagram, and LinkedIn each get different character-limit and hashtag-range checks.
 
-After extraction, the application analyzes the content to calculate metrics such as word count, character count, hashtags, mentions, and estimated reading time, and provides engagement-related suggestions based on the extracted content.
-
-A key trade-off was choosing client-side processing instead of a backend service. This keeps the application simple, reduces server requirements, and improves privacy because uploaded content can be processed locally. However, OCR performance can depend on image quality and browser resources, and complex PDFs may not preserve their original formatting perfectly. Overall, the chosen technologies provide a lightweight solution while satisfying the required upload, extraction, analysis, and usability features.
+The main trade-off is client-side processing: it's simple, free to host, and private, but OCR accuracy depends on image quality, and decorative fonts remain a known weak point. This was accepted in favor of a fast, lightweight tool that fully covers the upload → extract → analyze → suggest workflow.
 
 ## Live Demo
 
