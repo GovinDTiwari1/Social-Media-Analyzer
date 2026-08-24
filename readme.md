@@ -3,6 +3,10 @@
 A web application that extracts text from uploaded PDFs and scanned images (via OCR), 
 then analyzes the content to suggest engagement improvements for social media posts.
 
+## Live Demo
+
+👉 https://social-media-analyzer-sage.vercel.app/
+
 ## Features
 - 📄 Upload PDFs or scanned images via drag-and-drop or file picker
 - 👁️ Live file preview before analysis (embedded PDF viewer / image preview)
@@ -25,6 +29,18 @@ then analyzes the content to suggest engagement improvements for social media po
 - **PDF Parsing:** pdf.js
 - **OCR:** Tesseract.js, with custom canvas-based image preprocessing
 - **Upload UI:** react-dropzone
+
+## Technical Details
+- Client-side only — no backend, all processing happens in the browser
+- Two-page flow (upload → analysis) managed with React state, no router
+- PDF text extracted via pdf.js, preserving structure across all pages
+- Image OCR via Tesseract.js, with canvas-based preprocessing (2x upscale, grayscale, contrast boost, sharpening) before recognition
+- Post-OCR noise filter removes garbled lines using letter-ratio, word-length, and symbol-density heuristics
+- Content analysis: word/char count, hashtags, mentions, reading time, Flesch Reading Ease readability score
+- Tone checks: ALL CAPS overuse, exclamation-mark spam, call-to-action detection
+- Platform-aware rules (Twitter/X, Instagram, LinkedIn, General) with different char-limit and hashtag-range thresholds
+- Weighted 0–100 engagement score rendered as a color-coded SVG gauge
+- Copy-to-clipboard and download as text file of extracted text; hashtags/mentions highlighted inline
 
 ## Getting Started
 
@@ -55,12 +71,12 @@ npm run build
 ```
 
 ## Approach
-The app is built with React and runs entirely client-side with no backend, keeping uploaded content private to the user's browser. PDFs are parsed directly in the browser, extracting embedded text across all pages while preserving line structure. Images go through an in-browser OCR engine, but first pass through a canvas-based preprocessing step — upscaling, grayscale conversion, contrast boosting, and sharpening — since testing on real social media screenshots showed raw OCR struggled with captions overlaid on busy photo backgrounds. A noise filter then removes garbled OCR fragments (short, symbol-heavy, or low letter-ratio lines) before analysis, so word counts reflect real caption content rather than misread artifacts.
-
-Extracted text is analyzed for word/character count, hashtags, mentions, reading time, and a Flesch Reading Ease readability score, plus tone checks for ALL CAPS overuse, exclamation-mark spam, and call-to-action presence. These combine into a single 0–100 engagement score, and analysis is platform-aware — Twitter/X, Instagram, and LinkedIn each get different character-limit and hashtag-range checks.
-
-The main trade-off is client-side processing: it's simple, free to host, and private, but OCR accuracy depends on image quality, and decorative fonts remain a known weak point. This was accepted in favor of a fast, lightweight tool that fully covers the upload → extract → analyze → suggest workflow.
-
-## Live Demo
-
-👉 https://social-media-analyzer-sage.vercel.app/
+- Client-side only, built with React — no backend, keeps content private
+- PDFs parsed in-browser with structure preserved across pages
+- Images processed with in-browser OCR after canvas preprocessing (upscale, grayscale, contrast, sharpen) to improve accuracy on messy screenshots
+- Noise filter removes garbled OCR lines before analysis for cleaner word counts
+- Analyzes word/char count, hashtags, mentions, reading time, and readability
+- Flags ALL CAPS overuse, exclamation spam, and missing call-to-action
+- Combines all signals into a single 0–100 engagement score
+- Platform-aware rules for Twitter/X, Instagram, and LinkedIn
+- Trade-off: client-side keeps it simple and private, but OCR accuracy depends on image quality and decorative fonts remain a weak spot
